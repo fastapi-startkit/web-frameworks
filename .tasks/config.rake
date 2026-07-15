@@ -129,7 +129,7 @@ def commands_for(language, framework, variant, provider = 'docker')
   File.join(File.dirname(__FILE__), 'memory_sampler.rb')
   oha_path = command_available?('oha') ? 'oha' : File.expand_path('~/.cargo/bin/oha')
 
-  commands[:warmup] << "#{oha_path} --wait-ongoing-requests-after-deadline --no-tui --disable-keepalive --latency-correction -z 5s http://`cat #{hostname}`:3000/"
+  commands[:warmup] << "#{oha_path} --wait-ongoing-requests-after-deadline --no-tui --latency-correction -z 5s http://`cat #{hostname}`:3000/"
   commands[:test] << "ENGINE=#{variant} LANGUAGE=#{language} FRAMEWORK=#{framework} bundle exec rspec .spec"
 
   concurrencies.split(',').each do |concurrency|
@@ -142,7 +142,7 @@ def commands_for(language, framework, variant, provider = 'docker')
     routes.split(',').each do |route|
       method, uri = route.split(':')
       output = File.join(directory, language, framework, '.results', concurrency, "#{uri.tr('/', '_')}.json")
-      oha_cmds << "#{oha_path} --wait-ongoing-requests-after-deadline --no-tui --disable-keepalive --latency-correction -c #{concurrency} -z 15s -m #{method} --output-format json --output #{output} http://`cat #{hostname}`:3000#{uri}"
+      oha_cmds << "#{oha_path} --wait-ongoing-requests-after-deadline --no-tui --latency-correction -c #{concurrency} -z 15s -m #{method} --output-format json --output #{output} http://`cat #{hostname}`:3000#{uri}"
     end
 
     # Start memory sampler in background, run all oha calls, then stop sampler
